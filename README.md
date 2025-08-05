@@ -1,3 +1,11 @@
+# MTG Deck Builder
+
+Live Demo: [https://jakecumber1.github.io/mtg_deck_builder/](https://jakecumber1.github.io/mtg_deck_builder/)
+
+---
+
+Below are instructions to run the build locally, have fun deck building!
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
