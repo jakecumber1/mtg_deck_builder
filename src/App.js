@@ -122,6 +122,42 @@ function App() {
     setDeck(importedDeck);
   }; 
 
+
+  //Day 2 BONUS! Handle the card faces of double sided/split images
+  //Going to add a function to bundle hadnle getting the card faces data.
+  const getCardImages = (card) => {
+    //check if card has a faces property, if it does, ensure it is an array object
+    if (card.card_faces && Array.isArray(card.card_faces) && card.card_faces.every(face => face.image_uris)) {
+      //then return a mapping of faces to images for later
+      return card.card_faces.map(face => face.image_uris?.small);
+    }
+    //otherwise return a normal card
+    return [card.image_uris?.small];
+  }
+  //add card image display to condense the html down in the bottom, handle split cards
+  //the ({ card }) indifcates that this is a function component
+  //this means it's a javascript function which returns jsx
+  const CardImageDisplay = ({card}) => {
+    //Get our card faces
+    const images = getCardImages(card);
+    //return the corresponding html code
+    return (
+      <div className="card-images">
+        {images.map((url, idx) => (
+          <img
+            key={idx}
+            src={url}
+            alt={`${card.name} face ${idx}`}
+            className={
+              card.layout === "split" ? "split-card" :
+              card.layout?.includes("transform") || card.layout?.includes("modal_dfc") ? "double-faced-card" : ""
+            }
+          ></img>
+        ))}
+      </div>
+    )
+  }
+
   //Now that our basic deck building functions are handled we can create the actual page
   //Remember that the webpage is wrapped in a return statement in the app function.
   //The current layout starting day 2 is just one section after the other, here is what I want my final layout to be
@@ -145,21 +181,20 @@ function App() {
       <button onClick={searchCards}>Search</button>
 
       <h2>Search Results</h2>
-      <div className="card-list">
-        {searchResults.map(card => (
-          <div key={card.id} className="card">
-            <img src={card.image_uris?.small || ''} alt={card.name} />
-            <p>{card.name}</p>
-            <button onClick={() => addToDeck(card)}>Add to Deck</button>
-          </div>
-        ))}
-      </div>
-
+        <div className="card-list">
+          {searchResults.map((card, index) => (
+            <div key={index} className="card">
+              <CardImageDisplay card={card} />
+              <p>{card.name}</p>
+              <button onClick={() => addToDeck(card)}>Add</button>
+            </div>
+          ))}
+        </div>
       <h2>Deck ({deck.length} cards)</h2>
       <div className="card-list">
         {deck.map((card, index) => (
           <div key={index} className="card">
-            <img src={card.image_uris?.small || ''} alt={card.name} />
+            <CardImageDisplay card={card} />
             <p>{card.name}</p>
             <button onClick={() => removeFromDeck(index)}>Remove</button>
           </div>
