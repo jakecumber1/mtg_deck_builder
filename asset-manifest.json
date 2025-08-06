@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/mtg_deck_builder/static/css/main.a5752853.css",
-    "main.js": "/mtg_deck_builder/static/js/main.3459077f.js",
+    "main.css": "/mtg_deck_builder/static/css/main.8837874a.css",
+    "main.js": "/mtg_deck_builder/static/js/main.ebf794a7.js",
     "index.html": "/mtg_deck_builder/index.html",
-    "main.a5752853.css.map": "/mtg_deck_builder/static/css/main.a5752853.css.map",
-    "main.3459077f.js.map": "/mtg_deck_builder/static/js/main.3459077f.js.map"
+    "main.8837874a.css.map": "/mtg_deck_builder/static/css/main.8837874a.css.map",
+    "main.ebf794a7.js.map": "/mtg_deck_builder/static/js/main.ebf794a7.js.map"
   },
   "entrypoints": [
-    "static/css/main.a5752853.css",
-    "static/js/main.3459077f.js"
+    "static/css/main.8837874a.css",
+    "static/js/main.ebf794a7.js"
   ]
 }
