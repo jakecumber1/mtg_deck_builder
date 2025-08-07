@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -157,7 +157,58 @@ function App() {
       </div>
     )
   }
+  //write a function for generating stars in the background of our website
+  //stars are stylized in app.cs, this just generates and puts them into the html
+  //we're going to do structured randomness, to ensure the stars are spread-out intentionally but not looking placed individually.
+  const generateStars = (numRows = 8, numCols = 12) => {
+    const starContainer = document.getElementById("star-container");
+    //ensure the container is empty before we populate it, if it isn't empty don't run the function
+    if (starContainer && starContainer.children.length > 0) return;
 
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    const cellWidth = screenWidth / numCols;
+    const cellHeight = screenHeight / numRows;
+
+    //iterate through our rows and columns, populating the stars at fixed points but within a random distance of that point
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const star = document.createElement("div");
+        star.classList.add("star");
+
+        //in our grid, pick a random position within the current cell
+        const x = col * cellWidth + Math.random() * cellWidth;
+        const y = row * cellHeight + Math.random() * cellHeight;
+
+        //randomize the size of the star
+        //guarentees us a size between 3-7 pixels
+        const size = Math.random() * 4 + 3;
+        star.style.left = `${x}px`;
+        star.style.top = `${y}px`;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        //randomize the timing of the animation, so stars shine differently from eachother
+        star.style.animationDelay = `${Math.random() * 5}s`;
+
+        starContainer.appendChild(star);
+      }
+    }
+  };
+
+  const StarContainer = () => {
+    useEffect(() => {
+      const starContainer = document.createElement("div");
+      starContainer.className = "star-container";
+      starContainer.id = "star-container";
+      document.body.appendChild(starContainer);
+      //generate stars
+      generateStars();
+      //clean up
+      return () => {};
+    }, [])
+    return null;
+  };
   //Now that our basic deck building functions are handled we can create the actual page
   //Remember that the webpage is wrapped in a return statement in the app function.
   //The current layout starting day 2 is just one section after the other, here is what I want my final layout to be
@@ -171,16 +222,17 @@ function App() {
   */
   return (
     <div className="App">
-      <h1>MTG Deck Builder</h1>
+      <StarContainer></StarContainer>
+      <h1 className="glow">MTG Deck Builder</h1>
       <input
         type="text"
         value={searchQuery}
         onChange={e => setSearchQuery(e.target.value)}
-        placeholder="Search for cards:"
+        placeholder="Search for cards"
       ></input>
       <button onClick={searchCards}>Search</button>
 
-      <h2>Search Results</h2>
+      <h2 className="glow">Search Results</h2>
         <div className="card-list">
           {searchResults.map((card, index) => (
             <div key={index} className="card">
@@ -190,7 +242,7 @@ function App() {
             </div>
           ))}
         </div>
-      <h2>Deck ({deck.length} cards)</h2>
+      <h2 className="glow">Deck ({deck.length} cards)</h2>
       <div className="card-list">
         {deck.map((card, index) => (
           <div key={index} className="card">
@@ -200,16 +252,18 @@ function App() {
           </div>
         ))}
       </div>
-      <textarea
-        rows="10"
-        cols="50"
-        placeholder="Paste deck list here"
-        value={importText}
-        onChange={(e) => setImportText(e.target.value)}>
-      </textarea>
-      <br />
-      <button onClick={importDeck}>Import Deck</button>
-      <button onClick={exportDeck}>Export Deck</button>
+      <div>
+        <textarea
+          rows="10"
+          cols="50"
+          placeholder="Paste thou deck list here"
+          value={importText}
+          onChange={(e) => setImportText(e.target.value)}>
+        </textarea>
+        <br />
+        <button onClick={importDeck}>Import Deck</button>
+        <button onClick={exportDeck}>Export Deck</button>
+      </div>
     </div>
   );
 }
