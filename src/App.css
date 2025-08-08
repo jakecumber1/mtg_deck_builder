@@ -167,13 +167,14 @@ button:hover {
 }
 
 .card-images img {
-  max-width: 100%;
+  max-width: 150px;
   height: auto;
   display: block;
 }
 
 /*Add a card preview for hovering over like in mtg arena*/
 .card-preview {
+  width: 300px;
   position: fixed;
   z-index: 5;
   pointer-events: none;
@@ -185,7 +186,8 @@ button:hover {
   height: auto;
   border-radius: 8px;
   border: 2px solid gold;
-  box-shadow: 0 0 15px rgba(0,0,0,0.0)
+  box-shadow: 0 0 15px rgba(0,0,0,0.0);
+  pointer-events: none;
 }
 
 

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { createPortal } from 'react-dom';
 import axios from 'axios';
 import './App.css';
 
@@ -135,10 +136,10 @@ function App() {
     //check if card has a faces property, if it does, ensure it is an array object
     if (card.card_faces && Array.isArray(card.card_faces) && card.card_faces.every(face => face.image_uris)) {
       //then return a mapping of faces to images for later
-      return card.card_faces.map(face => face.image_uris?.small);
+      return card.card_faces.map(face => face.image_uris?.normal);
     }
     //otherwise return a normal card
-    return [card.image_uris?.small];
+    return [card.image_uris?.normal];
   }
   //add card image display to condense the html down in the bottom, handle split cards
   //the ({ card }) indifcates that this is a function component
@@ -171,9 +172,26 @@ function App() {
     const [previewPos, setPreviewPos] = useState({x: 0, y: 0});
     const [showPreview, setShowPreview] = useState(false);
 
+    const previewWidth = 300;
+    const previewHeight = 420;
+
     const handleMouseMove = (e) => {
-      setPreviewPos({x: e.clientX, y: e.clientY});
+      let x = e.clientX + 15;
+      let y = e.clientY + 15;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (x + previewWidth > viewportWidth) {
+        x = e.clientX - previewWidth - 15;
+      }
+      if (y + previewHeight > viewportHeight) {
+        y = e.clientY - previewHeight - 15
+      }
+      setPreviewPos({x, y});
     };
+
+    
+
     return (
       <>
         <img
@@ -184,13 +202,14 @@ function App() {
           onMouseMove={handleMouseMove}
           style={{cursor : "pointer"}}
         />
-        {showPreview && (
+        {showPreview && createPortal(
           <div
             className= "card-preview"
-            style={{top: previewPos.y, left: previewPos.x}}
+            style={{top: previewPos.y, left: previewPos.x, position: 'fixed'}}
           >
             <img src={src} alt={alt} />
-          </div>
+          </div>,
+          document.body
         )}
       </>
     )
