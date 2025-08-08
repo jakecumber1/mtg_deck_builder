@@ -150,7 +150,7 @@ function App() {
     return (
       <div className="card-images">
         {images.map((url, idx) => (
-          <img
+          <HoverImagePreview
             key={idx}
             src={url}
             alt={`${card.name} face ${idx}`}
@@ -158,11 +158,44 @@ function App() {
               card.layout === "split" ? "split-card" :
               card.layout?.includes("transform") || card.layout?.includes("modal_dfc") ? "double-faced-card" : ""
             }
-          ></img>
+          ></HoverImagePreview>
         ))}
       </div>
     )
   }
+
+//Day 4: Write a function HoverImagePreview, which will allow us to preview cards like in MTG arena so they're readable on large displays
+//ensure it can be added to CardImageDisplay to keep from messing with the existing html at the bottom
+  const HoverImagePreview = ({src, alt}) => {
+    //this kind of usestate is for a dictionary/hash map
+    const [previewPos, setPreviewPos] = useState({x: 0, y: 0});
+    const [showPreview, setShowPreview] = useState(false);
+
+    const handleMouseMove = (e) => {
+      setPreviewPos({x: e.clientX, y: e.clientY});
+    };
+    return (
+      <>
+        <img
+          src={src}
+          alt={alt}
+          onMouseEnter={() => setShowPreview(true)}
+          onMouseLeave={() => setShowPreview(false)}
+          onMouseMove={handleMouseMove}
+          style={{cursor : "pointer"}}
+        />
+        {showPreview && (
+          <div
+            className= "card-preview"
+            style={{top: previewPos.y, left: previewPos.x}}
+          >
+            <img src={src} alt={alt} />
+          </div>
+        )}
+      </>
+    )
+  }
+
   //write a function for generating stars in the background of our website
   //stars are stylized in app.cs, this just generates and puts them into the html
   //we're going to do structured randomness, to ensure the stars are spread-out intentionally but not looking placed individually.

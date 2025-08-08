@@ -151,6 +151,7 @@ button:hover {
   border: 1px solid gold;
   padding: 0.5rem;
   background: #3b1e3f;
+  color: #bfa757;
   display: inline-block;
   text-align: center;
   max-width: 100%;
@@ -170,6 +171,24 @@ button:hover {
   height: auto;
   display: block;
 }
+
+/*Add a card preview for hovering over like in mtg arena*/
+.card-preview {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  transform: translate(15px, 15px);
+}
+
+.card-preview img {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid gold;
+  box-shadow: 0 0 15px rgba(0,0,0,0.0)
+}
+
+
 /*don't forget split cards!*/
 .split-card {
   transform: rotate(90deg);
