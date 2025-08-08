@@ -26,8 +26,14 @@ function App() {
   const searchCards = async () => {
     console.log(`${encodeURIComponent(searchQuery)}`);
     //await pauses the function exectution till the promise is returned, we don't want to return the results before we've got them.
-    const rest = await axios.get(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchQuery)}`);
-    setSearchResults(rest.data.data);
+    //wrap in a try clause in case we search for a non-existant card.
+    try {
+      const rest = await axios.get(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchResults(rest.data.data);
+    } catch (err) {
+      alert(`Failed to return any results for ${searchQuery}`)
+    }
+
   };
 
   //Next we will handle simple deck operations, adding and removing
