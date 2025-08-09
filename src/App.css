@@ -210,3 +210,40 @@ textarea::placeholder {
   color: #bfa757;
   opacity: 1;
 }
+
+.deck-select {
+ /*Remove default styling*/
+ appearance: none;
+ -webkit-appearance: none;
+ -moz-appearance: none;
+ background-color: #2d1a40;
+ color: #f2e6ff;
+ border: 1px solid gold;
+ padding: 0.5rem 1rem;
+ border-radius: 5px;
+ font-family: inherit;
+ font-weight: bold;
+ transition: background-color 0.3s ease;
+ cursor: pointer;
+ 
+ /*dropdown arrow*/
+ padding-right: 2rem;
+ /*super dark evil svg tech
+ but seriously, nothing scary
+ data:image/svg+xml;utf8 just tells the browser we're going to read an svg image encoded as utf8
+ then xmlns confirms that this is a svg,
+ finally the path tag, specifically d='...' are just directions on how to draw the image
+ M7 10 (move pen to x=7,y=10)
+ l5 5 draw a line (relative to current position) 5 right, 5 down
+ l5 -5 5 right, 5 up
+ z close the shape (making the v for our dropdown arrows)
+ */
+ background-image: url("data:image/svg+xml;utf8,<svg fill='gold' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+ background-repeat: no-repeat;
+ background-position: right 0.5rem center;
+ background-size: 1rem;
+}
+
+.deck-select:hover {
+  background-color: #4b2c6d;
+}

@@ -20,6 +20,8 @@ function App() {
   //First we need a state for our import text
   const [importText, setImportText] = useState('');
 
+
+
   //First we will handle querying, we will use the axios library to use scryfall and store the results
   //Remember, an async function is one that returns a promise, I.E it runs while other stuff occurs
   //This means we want to use it for tasks that can take a long time without interupting our app...
@@ -267,6 +269,65 @@ function App() {
     }, [])
     return null;
   };
+  
+  //Day 4 (bonus), add a feature for saving and loading a decks
+  //variable for typing in a name field for the deck
+  const [deckName, setDeckName] = React.useState("");
+  const [savedDeckNames, setSavedDeckNames] = React.useState([]);
+  // Load saved names when the page loads
+  React.useEffect(() => {
+    const names = Object.keys(localStorage).filter(key =>
+      key.startsWith("deck-")
+    ).map(key => key.replace("deck-", ""));
+    setSavedDeckNames(names);
+  }, []);
+
+  const saveDeck = () => {
+    if (!deckName) return;
+    localStorage.setItem(`deck-${deckName}`, JSON.stringify(deck));
+
+    setSavedDeckNames(prev => {
+      if (!prev.includes(deckName)) {
+        return [...prev, deckName];
+      }
+      return prev;
+    });
+  };
+
+  const loadDeck = (name) => {
+    const stored = localStorage.getItem(`deck-${name}`);
+    if (stored) {
+      setDeck(JSON.parse(stored));
+    }
+  };
+  /*
+  const DeckSaveLoad = () => {
+    return (
+      <div>
+        <input
+          value={deckName}
+          onChange={(e) => setDeckName(e.target.value)}
+          placeholder="Deck name"
+        >
+        </input>
+        <button onClick={saveDeck}>Save</button>
+        
+        <select
+        onChange={(e) => loadDeck(e.target.value)}
+        defaultValue="">
+          <option value="" disabled>
+            Select a saved deck
+          </option>
+          {savedDeckNames.map((name) => (
+            <option key={name} value= {name}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </div>
+    )
+  }
+  */
   //Now that our basic deck building functions are handled we can create the actual page
   //Remember that the webpage is wrapped in a return statement in the app function.
   //The current layout starting day 2 is just one section after the other, here is what I want my final layout to be
@@ -314,7 +375,7 @@ function App() {
         <textarea
           rows="10"
           cols="50"
-          placeholder="Paste thou deck list here"
+          placeholder="Paste thy deck list here"
           value={importText}
           onChange={(e) => setImportText(e.target.value)}>
         </textarea>
@@ -322,8 +383,45 @@ function App() {
         <button onClick={importDeck}>Import Deck</button>
         <button onClick={exportDeck}>Export Deck</button>
       </div>
+      <DeckSaveLoad
+      deckName={deckName}
+      setDeckName={setDeckName}
+      saveDeck={saveDeck}
+      savedDeckNames={savedDeckNames}
+      loadDeck={loadDeck}></DeckSaveLoad>
     </div>
   );
 }
+
+//Day 5: moved the deck save and load feature to outside the app function to save lag, it was rerendering every frame.
+function DeckSaveLoad({ deckName, setDeckName, saveDeck, savedDeckNames, loadDeck }) {
+  return (
+    <div>
+      <input
+        value={deckName}
+        onChange={(e) => setDeckName(e.target.value)}
+        placeholder="Deck name"
+      />
+      <button onClick={saveDeck}>Save</button>
+
+      <select
+        onChange={(e) => loadDeck(e.target.value)}
+        value=""
+        className="deck-select"
+      >
+        <option value="" disabled>
+          Select a saved deck
+        </option>
+        {savedDeckNames.map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+
 
 export default App;
