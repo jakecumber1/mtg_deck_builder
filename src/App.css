@@ -32,6 +32,7 @@ body::before {
 }
 
 /*write a class with styling for our background stars*/
+/*container for holding our stars*/
 .star-container {
   position: fixed;
   top: 0;
@@ -42,7 +43,6 @@ body::before {
   pointer-events: none;
   overflow: hidden;
 }
-/*container for holding our stars*/
 /*Animation for making stars twinkle*/
 @keyframes twinkle {
   0%, 100% {opacity: 0.9; transform: scale(1);}
@@ -59,6 +59,8 @@ body::before {
   animation: twinkle 3s infinite ease-in-out;
 }
 
+/*we'll use psuedoelements to make the stars appear multi pointed 
+We'll declare a glowing circle and rotate it a bit to get the desired effect*/
 .star::before, .star::after {
   content: '';
   position: absolute;
@@ -66,6 +68,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 200%;
+  /*we tried with ellipses to give the star more of a far away 'streaky' look, but that just made the stars look unshaped and ugly*/
   background: radial-gradient(circle, gold 40%, transparent 40%);
   transform: rotate(60deg);
   border-radius: 50%;

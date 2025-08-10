@@ -300,34 +300,25 @@ function App() {
       setDeck(JSON.parse(stored));
     }
   };
-  /*
-  const DeckSaveLoad = () => {
-    return (
-      <div>
-        <input
-          value={deckName}
-          onChange={(e) => setDeckName(e.target.value)}
-          placeholder="Deck name"
-        >
-        </input>
-        <button onClick={saveDeck}>Save</button>
-        
-        <select
-        onChange={(e) => loadDeck(e.target.value)}
-        defaultValue="">
-          <option value="" disabled>
-            Select a saved deck
-          </option>
-          {savedDeckNames.map((name) => (
-            <option key={name} value= {name}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </div>
-    )
-  }
-  */
+  
+  const deleteDeck = (name) => {
+    if (!name) {
+      //this shouldn't run since we will have the user select by option, but just in case...
+      return;
+    }
+
+    //Ensure the user isn't clicking delete with the intent to clear
+    if (!window.confirm(`Are you SURE you want to delete the deck "${name.toUpperCase()}"?`)) {
+      return;
+    }
+
+    localStorage.removeItem(`deck-${name}`);
+
+    //update our list
+    setSavedDeckNames(prev => prev.filter(deckName => deckName !== name));
+    setDeckName("");
+    setDeck([]);
+  };
   //Now that our basic deck building functions are handled we can create the actual page
   //Remember that the webpage is wrapped in a return statement in the app function.
   //The current layout starting day 2 is just one section after the other, here is what I want my final layout to be
@@ -343,6 +334,41 @@ function App() {
     <div className="App">
       <StarContainer></StarContainer>
       <h1 className="glow">MTG Deck Builder</h1>
+      <h2 className="glow">Deck ({deck.length} cards)</h2>
+        <div className="card-list">
+          {deck.map((card, index) => (
+            <div key={index} className="card">
+              <CardImageDisplay card={card} />
+              <p>{card.name}</p>
+              <button onClick={() => removeFromDeck(index)}>Remove</button>
+            </div>
+          ))}
+        </div>
+        <div>
+        <button onClick={() => setDeck([])}>Clear Deck</button>
+        </div>
+        <br />
+        <div>
+          <textarea
+            rows="10"
+            cols="50"
+            placeholder="Paste thy deck list here"
+            value={importText}
+            onChange={(e) => setImportText(e.target.value)}>
+          </textarea>
+          <br />
+          <button onClick={importDeck}>Import Deck</button>
+          <button onClick={exportDeck}>Export Deck</button>
+        </div>
+        <br />
+        <DeckSaveLoad
+        deckName={deckName}
+        setDeckName={setDeckName}
+        saveDeck={saveDeck}
+        savedDeckNames={savedDeckNames}
+        loadDeck={loadDeck}
+        deleteDeck={deleteDeck}></DeckSaveLoad>
+        <br />
       <input
         type="text"
         value={searchQuery}
@@ -361,40 +387,13 @@ function App() {
             </div>
           ))}
         </div>
-      <h2 className="glow">Deck ({deck.length} cards)</h2>
-      <div className="card-list">
-        {deck.map((card, index) => (
-          <div key={index} className="card">
-            <CardImageDisplay card={card} />
-            <p>{card.name}</p>
-            <button onClick={() => removeFromDeck(index)}>Remove</button>
-          </div>
-        ))}
-      </div>
-      <div>
-        <textarea
-          rows="10"
-          cols="50"
-          placeholder="Paste thy deck list here"
-          value={importText}
-          onChange={(e) => setImportText(e.target.value)}>
-        </textarea>
-        <br />
-        <button onClick={importDeck}>Import Deck</button>
-        <button onClick={exportDeck}>Export Deck</button>
-      </div>
-      <DeckSaveLoad
-      deckName={deckName}
-      setDeckName={setDeckName}
-      saveDeck={saveDeck}
-      savedDeckNames={savedDeckNames}
-      loadDeck={loadDeck}></DeckSaveLoad>
     </div>
   );
 }
 
 //Day 5: moved the deck save and load feature to outside the app function to save lag, it was rerendering every frame.
-function DeckSaveLoad({ deckName, setDeckName, saveDeck, savedDeckNames, loadDeck }) {
+//Final Day" added deleteDeck feature to this function.
+function DeckSaveLoad({ deckName, setDeckName, saveDeck, savedDeckNames, loadDeck, deleteDeck }) {
   return (
     <div>
       <input
@@ -418,6 +417,11 @@ function DeckSaveLoad({ deckName, setDeckName, saveDeck, savedDeckNames, loadDec
           </option>
         ))}
       </select>
+      <button
+        onClick={() => {
+         deleteDeck(deckName);
+        }}
+      >Delete</button>
     </div>
   );
 }
